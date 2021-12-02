@@ -1,4 +1,4 @@
-"""Advent of Code - 2021 Day XX"""
+"""Advent of Code - 2021 Day <DAY>"""
 
 
 def part1(input):
