@@ -11,7 +11,7 @@ import aoc
 
 
 def help():
-    print("Usage: run.py day [part]", file=sys.stderr)
+    print("Usage: run.py day [part] [input]", file=sys.stderr)
 
 
 def main():
@@ -25,7 +25,12 @@ def main():
     if len(sys.argv) > 2:
         part = int(sys.argv[2])
 
-    aoc.run(day=day, part=part)
+    if len(sys.argv) > 3:
+        input_file = sys.argv[3]
+    else:
+        input_file = None
+
+    aoc.run(day=day, part=part, input_file=input_file)
 
 
 if __name__ == '__main__':

@@ -3,10 +3,10 @@ import sys
 
 from aoc.input import Input
 
-def run(day, part):
+def run(day, part, input_file=None):
     pkg = importlib.import_module(f"aoc.solutions.{day:02d}")
 
-    input = Input(day)
+    input = Input(day, input_file)
 
     if part == 1:
         print(pkg.part1(input))

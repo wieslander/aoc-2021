@@ -5,4 +5,4 @@
 # USAGE
 #   ./run.sh DAY PART
 
-python3 src/main.py $1 $2
+python3 src/main.py $1 $2 $3

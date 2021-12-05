@@ -1,13 +1,16 @@
 import os
 
 class Input:
-    def __init__(self, day):
-        with self._open(day) as f:
+    def __init__(self, day, input_file=None):
+        with self._open(day, input_file) as f:
             self._data = f.read()
 
-    def _open(self, day):
-        filename = f"{day:02d}.txt"
-        return open(os.path.join("inputs", filename))
+    def _open(self, day, input_file=None):
+        path = input_file
+        if path is None:
+            filename = f"{day:02d}.txt"
+            path = os.path.join("inputs", filename)
+        return open(path)
 
     def data(self):
         return self._data
