@@ -11,7 +11,7 @@ import aoc
 
 
 def help():
-    print("Usage: run.py day [part] [input]", file=sys.stderr)
+    print("Usage: main.py day [part] [input]", file=sys.stderr)
 
 
 def main():
