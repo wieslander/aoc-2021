@@ -1,28 +1,20 @@
 """Advent of Code - 2021 Day 6"""
 
+from collections import deque
+
 def solve(input, days):
-    timers = {}
+    timers = deque([0] * 9)
 
     for timer in input.data().split(','):
-        t = int(timer)
-        timers.setdefault(t, 0)
-        timers[t] += 1
+        pos = int(timer)
+        timers[pos] += 1
 
     for day in range(days):
-        new_timers = {}
-        for timer, count in timers.items():
-            if timer == 0:
-                new_timers[8] = count
-                new_timers.setdefault(6, 0)
-                new_timers[6] += count
-            else:
-                t = timer - 1
-                new_timers.setdefault(t, 0)
-                new_timers[t] += count
+        reproducing = timers.popleft()
+        timers[6] += reproducing
+        timers.append(reproducing)
 
-        timers = new_timers
-
-    return sum(timers.values())
+    return sum(timers)
 
 
 def part1(input):
