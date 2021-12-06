@@ -28,4 +28,8 @@ solution_filename="src/aoc/solutions/${day_padded}.py"
 sed "s/<DAY>/${day}/g" src/template.py > "$solution_filename"
 
 # Download today's input file
-aoc -y 2021 -d "$day" -f "inputs/${day_padded}.txt" download
+input_filename="inputs/${day_padded}.txt"
+aoc -y 2021 -d "$day" -f "$input_filename" download
+
+# Open the solution file and input file in vertical split
+vim "$solution_filename" "$input_filename" -O
