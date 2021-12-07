@@ -10,12 +10,12 @@ def run(day, part, input_file=None, visualize=False):
 
     if part == 1:
         if visualize and hasattr(pkg, 'part1_visualization'):
-            pkg.part1_visualization(input)
+            print(pkg.part1_visualization(input))
         else:
             print(pkg.part1(input))
     elif part == 2:
         if visualize and hasattr(pkg, 'part2_visualization'):
-            pkg.part2_visualization(input)
+            print(pkg.part2_visualization(input))
         else:
             print(pkg.part2(input))
     else:
