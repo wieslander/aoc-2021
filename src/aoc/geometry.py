@@ -23,6 +23,9 @@ class Point:
     def __str__(self):
         return f'({self.x},{self.y})'
 
+    def __add__(self, other):
+        return Point(self.x + other.x, self.y + other.y)
+
 
 class Line:
     def __init__(self, start, end):
