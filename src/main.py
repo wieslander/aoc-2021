@@ -5,6 +5,7 @@ start the actual AoC runner.
 
 """
 
+import argparse
 import sys
 
 import aoc
@@ -15,22 +16,15 @@ def help():
 
 
 def main():
-    if len(sys.argv) < 2:
-        help()
-        sys.exit(1)
+    parser = argparse.ArgumentParser(description="Run solutions for Advent of Code 2021")
+    parser.add_argument('day', type=int, help="Run the solution to this day's puzzle")
+    parser.add_argument('part', type=int, default=1, help="The part of the puzzle to solve")
+    parser.add_argument('--input-file', help="Use a custom input file")
+    parser.add_argument('--visualize', action=argparse.BooleanOptionalAction, default=False,
+                        help="Visualize the solution, if a visualization has been implemented")
+    args = parser.parse_args()
 
-    day = int(sys.argv[1])
-    part = 1
-
-    if len(sys.argv) > 2:
-        part = int(sys.argv[2])
-
-    if len(sys.argv) > 3:
-        input_file = sys.argv[3]
-    else:
-        input_file = None
-
-    aoc.run(day=day, part=part, input_file=input_file)
+    aoc.run(day=args.day, part=args.part, input_file=args.input_file, visualize=args.visualize)
 
 
 if __name__ == '__main__':
