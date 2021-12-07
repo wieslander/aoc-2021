@@ -21,3 +21,6 @@ class Input:
             return [transform(l.strip()) for l in lines if l != '']
         else:
             return lines
+
+    def csv_line(self, transform=int):
+        return [transform(x) for x in self._data.split(',')]
