@@ -1,8 +1,5 @@
 """Advent of Code - 2021 Day 8"""
 
-import sys
-
-
 def part1(input):
     count = 0
 
