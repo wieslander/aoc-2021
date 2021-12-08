@@ -17,8 +17,13 @@ class Input:
 
     def lines(self, transform=None):
         lines = self._data.split('\n')
+
+        # Remove final empty line
+        if lines[-1] == '':
+            lines[-1:] = []
+
         if transform:
-            return [transform(l.strip()) for l in lines if l != '']
+            return [transform(l) for l in lines]
         else:
             return lines
 
