@@ -1,7 +1,18 @@
+from collections import defaultdict
+
+
 class Point:
     def __init__(self, x, y):
         self.x = x
         self.y = y
+
+    def neighbors(self):
+        return [
+            self + Point(0, -1),
+            self + Point(0, 1),
+            self + Point(-1, 0),
+            self + Point(1, 0),
+        ]
 
     @staticmethod
     def from_csv(s):
@@ -56,17 +67,40 @@ class Line:
 
 
 class Grid:
-    def __init__(self):
-        self.grid = {}
+    def __init__(self, defaultfactory=lambda: None):
+        self.grid = defaultdict(defaultfactory)
 
-    def get(self, point, default=None):
-        return self.grid.get(point, default)
+    def get(self, point):
+        return self.grid[point]
 
     def set(self, point, value):
         self.grid[point] = value
 
     def values(self):
         return self.grid.values()
+
+    def __getitem__(self, point):
+        return self.grid[point]
+
+    @staticmethod
+    def from_rows(rows):
+        grid = Grid()
+        for y, row in enumerate(rows):
+            for x, item in enumerate(row):
+                grid.set(Point(x, y), item)
+        return grid
+
+    def items(self):
+        positions = self.grid.keys()
+        min_x = min(p.x for p in positions)
+        max_x = max(p.x for p in positions)
+        min_y = min(p.y for p in positions)
+        max_y = max(p.y for p in positions)
+
+        for x in range(min_x, max_x + 1):
+            for y in range(min_y, max_y + 1):
+                p = Point(x, y)
+                yield p, self.grid[p]
 
     def __str__(self):
         points = self.grid.keys()

@@ -13,12 +13,12 @@ def parse_line(s):
 
 def part1(input):
     lines = input.lines(parse_line)
-    grid = Grid()
+    grid = Grid(int)
 
     for line in lines:
         if line.start.x == line.end.x or line.start.y == line.end.y:
             for pos in line.points():
-                line_count = grid.get(pos, 0) + 1
+                line_count = grid[pos] + 1
                 grid.set(pos, line_count)
 
     overlapping_points = [v for v in grid.values() if v >= 2]
@@ -27,11 +27,11 @@ def part1(input):
 
 def part2(input):
     lines = input.lines(parse_line)
-    grid = Grid()
+    grid = Grid(int)
 
     for line in lines:
         for pos in line.points():
-            line_count = grid.get(pos, 0) + 1
+            line_count = grid[pos] + 1
             grid.set(pos, line_count)
 
     overlapping_points = [v for v in grid.values() if v >= 2]
