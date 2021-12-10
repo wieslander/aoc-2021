@@ -8,31 +8,26 @@ from aoc.curses import visualize, Color
 from aoc.geometry import Grid, Point
 
 
-class OutputChar:
-    def __init__(self, output, color, bold=False):
-        self.output = output
-        self.color = color
-        self.bold = bold
-
-    @property
-    def attr(self):
-        attr = curses.color_pair(self.color)
-        if self.bold:
-            attr |= curses.A_BOLD
-        return attr
-
-
+char_width = 2
 height_map = {
-    8: OutputChar(".", Color.BLACK, bold=True),
-    7: OutputChar("-", Color.MAGENTA, bold=True),
-    6: OutputChar("+", Color.CYAN, bold=False),
-    5: OutputChar("*", Color.YELLOW, bold=True),
-    4: OutputChar('=', Color.GREEN, bold=True),
-    3: OutputChar('#', Color.GREEN, bold=False),
-    2: OutputChar('$', Color.YELLOW, bold=False),
-    1: OutputChar("&", Color.MAGENTA, bold=False),
-    0: OutputChar("@", Color.RED, bold=True),
+    8: Color.BLUE,
+    7: Color.BLUE,
+    6: Color.CYAN,
+    5: Color.GREEN,
+    4: Color.YELLOW,
+    3: Color.YELLOW,
+    2: Color.MAGENTA,
+    1: Color.MAGENTA,
+    0: Color.RED,
 }
+
+
+def render_grid(grid, window):
+    for pos, height in grid.items():
+        s = str(height) * char_width
+        attr = curses.color_pair(Color.BLACK) | curses.A_BOLD
+        window.addstr(pos.y, pos.x * char_width, s, attr)
+    window.refresh()
 
 
 def get_low_points(grid):
@@ -60,10 +55,11 @@ def get_basins(grid, window=None):
                 candidates.update(c.neighbors())
 
                 if window:
-                    char = height_map[height]
-                    window.addstr(c.y, c.x * 2, char.output * 2, char.attr)
+                    attr = curses.color_pair(height_map[height])
+                    s = str(height) * char_width
+                    window.addstr(c.y, c.x * char_width, s, attr)
                     window.refresh()
-                    time.sleep(0.005)
+                    time.sleep(0.004)
 
         yield basin
 
@@ -77,6 +73,8 @@ def part1(input):
 
 def part2(input, window=None):
     grid = Grid.from_rows(input.lines(lambda l: map(int, l)))
+    if window:
+        render_grid(grid, window)
     basins = sorted(get_basins(grid, window), key=lambda b: -len(b))
     return len(basins[0]) * len(basins[1]) * len(basins[2])
 
