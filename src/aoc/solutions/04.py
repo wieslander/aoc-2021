@@ -49,7 +49,7 @@ class Board:
 
         return False
 
-    def render(self, window):
+    def render(self, window, current_number):
         board_offset = self.get_board_offset(window)
 
         for row, squares in enumerate(self.rows):
@@ -68,6 +68,8 @@ class Board:
                     color = Color.YELLOW
 
                 attr = curses.color_pair(color)
+                if n == current_number:
+                    attr |= curses.A_REVERSE
                 window.addstr(y, x, s, attr)
 
     def get_board_offset(self, window):
@@ -117,7 +119,7 @@ def part1(input, window=None):
                 score = sum(board.unmarked_numbers()) * n
 
             if window:
-                board.render(window)
+                board.render(window, n)
 
             if score is not None:
                 break
@@ -127,8 +129,6 @@ def part1(input, window=None):
             time.sleep(0.1)
 
         if score is not None:
-            if window:
-                time.sleep(2)
             break
 
     return score
@@ -150,7 +150,7 @@ def part2(input, window=None):
                 last_score = sum(board.unmarked_numbers()) * n
 
             if window:
-                board.render(window)
+                board.render(window, n)
 
         if window:
             window.refresh()
