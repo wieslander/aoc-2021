@@ -5,6 +5,7 @@ import functools
 import itertools
 import time
 
+from aoc.curses import Color, visualize
 from aoc.geometry import Point
 
 
@@ -57,14 +58,14 @@ class Board:
                 y = board_offset.y + row
                 s = f'{n:>2d}'
 
-                color = 4
+                color = Color.BLUE
 
                 if self.is_bingo_square(Point(col, row)):
-                    color = 1
+                    color = Color.RED
                 elif self.has_bingo():
-                    color = 3
+                    color = Color.WHITE
                 elif checked:
-                    color = 2
+                    color = Color.YELLOW
 
                 attr = curses.color_pair(color)
                 window.addstr(y, x, s, attr)
@@ -107,9 +108,6 @@ def part1(input, window=None):
     numbers = [int(n) for n in lines[0].split(',')]
     boards = parse_bingo_boards(lines[2:])
 
-    if window:
-        init_curses()
-
     score = None
 
     for n in numbers:
@@ -142,9 +140,6 @@ def part2(input, window=None):
     boards = parse_bingo_boards(lines[2:])
     last_score = None
 
-    if window:
-        init_curses()
-
     for n in numbers:
         for index, board in enumerate(boards):
             if board.has_bingo():
@@ -165,17 +160,8 @@ def part2(input, window=None):
 
 
 def part1_visualization(input):
-    return curses.wrapper(functools.partial(part1, input))
+    return visualize(part1, input)
 
 
 def part2_visualization(input):
-    return curses.wrapper(functools.partial(part2, input))
-
-
-def init_curses():
-    curses.start_color()
-    curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLACK)
-    curses.init_pair(2, curses.COLOR_YELLOW, curses.COLOR_BLACK)
-    curses.init_pair(3, curses.COLOR_WHITE, curses.COLOR_BLACK)
-    curses.init_pair(4, curses.COLOR_BLUE, curses.COLOR_BLACK)
-    curses.curs_set(0)
+    return visualize(part2, input)
