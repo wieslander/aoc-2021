@@ -7,7 +7,7 @@ brace_map = {
     '<': '>',
 }
 
-score_map = {
+syntax_error_score_map = {
     ')': 3,
     ']': 57,
     '}': 1197,
@@ -37,9 +37,7 @@ def syntax_error_score(line):
         elif is_closing_brace(ch):
             last_opening_brace = stack.pop()
             if ch != brace_map[last_opening_brace]:
-                return score_map[ch]
-        else:
-            raise RuntimeError(f"Invalid character {ch}")
+                return syntax_error_score_map[ch]
 
     return 0
 
@@ -60,12 +58,7 @@ def get_autocompletion(line):
         elif is_closing_brace(ch):
             stack.pop()
 
-    completion_chars = []
-    while stack:
-        ch = stack.pop()
-        completion_chars.append(brace_map[ch])
-
-    return completion_chars
+    return reversed([brace_map[ch] for ch in stack])
 
 
 def part1(input):
