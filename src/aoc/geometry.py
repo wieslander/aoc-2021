@@ -6,13 +6,21 @@ class Point:
         self.x = x
         self.y = y
 
-    def neighbors(self):
-        return [
+    def neighbors(self, diagonal=False):
+        neighbors = [
             self + Point(0, -1),
             self + Point(0, 1),
             self + Point(-1, 0),
             self + Point(1, 0),
         ]
+        if diagonal:
+            neighbors.extend([
+                self + Point(-1, -1),
+                self + Point(-1, 1),
+                self + Point(1, -1),
+                self + Point(1, 1),
+            ])
+        return neighbors
 
     @staticmethod
     def from_csv(s):
@@ -81,6 +89,15 @@ class Grid:
 
     def __getitem__(self, point):
         return self.grid[point]
+
+    def __setitem__(self, point, value):
+        self.grid[point] = value
+
+    def __iter__(self):
+        return iter(self.grid)
+
+    def __len__(self):
+        return len(self.grid)
 
     @staticmethod
     def from_rows(rows):
