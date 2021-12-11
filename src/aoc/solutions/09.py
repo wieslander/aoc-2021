@@ -4,7 +4,7 @@ import curses
 import random
 import time
 
-from aoc.curses import visualize, Color
+from aoc.curses import Color
 from aoc.geometry import Grid, Point
 
 
@@ -77,7 +77,3 @@ def part2(input, window=None):
         render_grid(grid, window)
     basins = sorted(get_basins(grid, window), key=lambda b: -len(b))
     return len(basins[0]) * len(basins[1]) * len(basins[2])
-
-
-def part2_visualization(input):
-    return visualize(part2, input)

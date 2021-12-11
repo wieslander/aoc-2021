@@ -1,5 +1,6 @@
 import curses
 from enum import IntEnum
+import inspect
 import time
 
 
@@ -28,10 +29,14 @@ def init_curses():
 
 
 def visualize(f, input):
-    def wrapped(window):
-        init_curses()
-        result = f(input, window)
-        time.sleep(2)
-        return result
+    supports_visualization = len(inspect.signature(f).parameters) == 2
 
-    return curses.wrapper(wrapped)
+    if supports_visualization:
+        def wrapper(window):
+            init_curses()
+            result = f(input, window)
+            time.sleep(2)
+            return result
+        return curses.wrapper(wrapper)
+    else:
+        return f(input)

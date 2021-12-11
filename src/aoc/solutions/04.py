@@ -5,7 +5,7 @@ import functools
 import itertools
 import time
 
-from aoc.curses import Color, visualize
+from aoc.curses import Color
 from aoc.geometry import Point
 
 
@@ -157,11 +157,3 @@ def part2(input, window=None):
             time.sleep(0.1)
 
     return last_score
-
-
-def part1_visualization(input):
-    return visualize(part1, input)
-
-
-def part2_visualization(input):
-    return visualize(part2, input)
