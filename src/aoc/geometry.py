@@ -111,16 +111,7 @@ class Grid:
         return grid
 
     def items(self):
-        positions = self.grid.keys()
-        min_x = min(p.x for p in positions)
-        max_x = max(p.x for p in positions)
-        min_y = min(p.y for p in positions)
-        max_y = max(p.y for p in positions)
-
-        for x in range(min_x, max_x + 1):
-            for y in range(min_y, max_y + 1):
-                p = Point(x, y)
-                yield p, self.grid[p]
+        return self.grid.items()
 
     def __str__(self):
         points = self.grid.keys()

@@ -31,7 +31,7 @@ def render_grid(grid, window):
 
 
 def get_low_points(grid):
-    for pos, value in grid.items():
+    for pos, value in list(grid.items()):
         if all(grid[n] is None or grid[n] > value for n in pos.neighbors()):
             yield pos, value
 
