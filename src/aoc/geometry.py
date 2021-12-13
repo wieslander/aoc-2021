@@ -93,6 +93,9 @@ class Grid:
     def __setitem__(self, point, value):
         self.grid[point] = value
 
+    def __delitem__(self, point):
+        del self.grid[point]
+
     def __iter__(self):
         return iter(self.grid)
 
@@ -129,7 +132,7 @@ class Grid:
         for y in range(0, max_y + 1):
             values = []
             for x in range(0, max_x + 1):
-                values.append(self.get(Point(x, y), '.'))
+                values.append(self[Point(x, y)])
             lines.append("".join(str(v) for v in values))
 
         return "\n".join(lines)
