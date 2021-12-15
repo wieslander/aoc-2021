@@ -37,13 +37,22 @@ class Point:
         return hash((self.x, self.y))
 
     def __eq__(self, other):
-        return self.tuple() == other.tuple()
+        return self.tuple() == tuple(other)
+
+    def __lt__(self, other):
+        return self.tuple() < tuple(other)
+
+    def __gt__(self, other):
+        return self.tuple() > tuple(other)
 
     def __str__(self):
         return f'({self.x},{self.y})'
 
     def __add__(self, other):
         return Point(self.x + other.x, self.y + other.y)
+
+    def __iter__(self):
+        return iter(self.tuple())
 
 
 class Line:
@@ -112,6 +121,45 @@ class Grid:
 
     def items(self):
         return self.grid.items()
+
+    def topleft(self):
+        return self.corners()[0]
+
+    def topright(self):
+        return self.corners()[1]
+
+    def bottomleft(self):
+        return self.corners()[2]
+
+    def bottomright(self):
+        return self.corners()[3]
+
+    def width(self):
+        left = self.topleft()
+        right = self.topright()
+        return right.x - left.x + 1
+
+    def height(self):
+        top = self.topleft()
+        bottom = self.bottomleft()
+        return bottom.y - top.y + 1
+
+    def corners(self):
+        points = self.grid.keys()
+        min_x = min(p.x for p in points)
+        min_y = min(p.y for p in points)
+        max_x = max(p.x for p in points)
+        max_y = max(p.y for p in points)
+        return (
+            Point(min_x, min_y), Point(max_x, min_y),
+            Point(min_x, max_y), Point(max_x, max_y))
+
+    def neighbors(self, point, diagonal=False, include_unset=False):
+        neighbors = point.neighbors(diagonal)
+        if include_unset:
+            return neighbors
+        else:
+            return [n for n in neighbors if n in self.grid]
 
     def __str__(self):
         points = self.grid.keys()
