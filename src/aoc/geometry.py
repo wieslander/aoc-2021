@@ -86,6 +86,19 @@ class Line:
         yield pos
 
 
+class Rectangle:
+    def __init__(self, topleft, bottomright):
+        self.topleft = topleft
+        self.bottomright = bottomright
+
+    def includes(self, p):
+        min_x = self.topleft.x
+        max_x = self.bottomright.x
+        min_y = self.bottomright.y
+        max_y = self.topleft.y
+        return min_x <= p.x <= max_x and min_y <= p.y <= max_y
+
+
 class Grid:
     def __init__(self, defaultfactory=lambda: None):
         self.grid = defaultdict(defaultfactory)
