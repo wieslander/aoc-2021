@@ -87,15 +87,15 @@ class Line:
 
 
 class Rectangle:
-    def __init__(self, topleft, bottomright):
-        self.topleft = topleft
-        self.bottomright = bottomright
+    def __init__(self, top_left, bottom_right):
+        self.top_left = top_left
+        self.bottom_right = bottom_right
 
     def includes(self, p):
-        min_x = self.topleft.x
-        max_x = self.bottomright.x
-        min_y = self.bottomright.y
-        max_y = self.topleft.y
+        min_x = self.top_left.x
+        max_x = self.bottom_right.x
+        min_y = self.bottom_right.y
+        max_y = self.top_left.y
         return min_x <= p.x <= max_x and min_y <= p.y <= max_y
 
 
@@ -138,26 +138,26 @@ class Grid:
     def items(self):
         return self.grid.items()
 
-    def topleft(self):
+    def top_left(self):
         return self.corners()[0]
 
-    def topright(self):
+    def top_right(self):
         return self.corners()[1]
 
-    def bottomleft(self):
+    def bottom_left(self):
         return self.corners()[2]
 
-    def bottomright(self):
+    def bottom_right(self):
         return self.corners()[3]
 
     def width(self):
-        left = self.topleft()
-        right = self.topright()
+        left = self.top_left()
+        right = self.top_right()
         return right.x - left.x + 1
 
     def height(self):
-        top = self.topleft()
-        bottom = self.bottomleft()
+        top = self.top_left()
+        bottom = self.bottom_left()
         return bottom.y - top.y + 1
 
     def corners(self):

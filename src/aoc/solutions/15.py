@@ -50,8 +50,8 @@ def backtrack(path, grid, window):
 
 def part1(input, window=None):
     grid = Grid.from_rows(input.lines(lambda l: map(int, l)))
-    start = grid.topleft()
-    end = grid.bottomright()
+    start = grid.top_left()
+    end = grid.bottom_right()
     risk, path = find_lowest_risk_path(grid, start, end, window)
     if window:
         backtrack(path, grid, window)
@@ -72,8 +72,8 @@ def part2(input, window=None):
                     new_risk = 9
                 grid[new_pos] = new_risk
 
-    start = grid.topleft()
-    end = grid.bottomright()
+    start = grid.top_left()
+    end = grid.bottom_right()
     risk, path = find_lowest_risk_path(grid, start, end, window)
     if window:
         backtrack(path, grid, window)
