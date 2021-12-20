@@ -75,6 +75,10 @@ class Point:
             raise ValueError("Cannot add a 2D point to a 3D point")
         return p
 
+    def __sub__(self, other):
+        z = -other.z if other.z is not None else None
+        return self + Point(-other.x, -other.y, z)
+
     def __iter__(self):
         return iter(self.tuple())
 
@@ -156,8 +160,8 @@ class Grid:
         return len(self.grid)
 
     @staticmethod
-    def from_rows(rows):
-        grid = Grid()
+    def from_rows(rows, defaultfactory=lambda: None):
+        grid = Grid(defaultfactory)
         for y, row in enumerate(rows):
             for x, item in enumerate(row):
                 grid.set(Point(x, y), item)
@@ -165,6 +169,9 @@ class Grid:
 
     def items(self):
         return self.grid.items()
+
+    def values(self):
+        return self.grid.values()
 
     def top_left(self):
         return self.corners()[0]
@@ -207,14 +214,14 @@ class Grid:
 
     def __str__(self):
         points = self.grid.keys()
-        max_x = max(p.x for p in points)
-        max_y = max(p.y for p in points)
+        top_left = self.top_left()
+        bottom_right = self.bottom_right()
 
         lines = []
 
-        for y in range(0, max_y + 1):
+        for y in range(top_left.y, bottom_right.y + 1):
             values = []
-            for x in range(0, max_x + 1):
+            for x in range(top_left.x, bottom_right.x + 1):
                 values.append(self[Point(x, y)])
             lines.append("".join(str(v) for v in values))
 
