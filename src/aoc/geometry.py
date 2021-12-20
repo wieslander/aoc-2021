@@ -1,43 +1,56 @@
 from collections import defaultdict
+from itertools import product
 
 
 class Point:
-    def __init__(self, x, y):
+    def __init__(self, x, y, z=None):
         self.x = x
         self.y = y
+        self.z = z
 
     def neighbors(self, diagonal=False):
+        is_3d = self.z is not None
         neighbors = [
-            self + Point(0, -1),
-            self + Point(0, 1),
-            self + Point(-1, 0),
-            self + Point(1, 0),
+            Point(self.x, self.y - 1, self.z),
+            Point(self.x, self.y + 1, self.z),
+            Point(self.x - 1, self.y, self.z),
+            Point(self.x + 1, self.y, self.z),
         ]
-        if diagonal:
+        if is_3d:
             neighbors.extend([
-                self + Point(-1, -1),
-                self + Point(-1, 1),
-                self + Point(1, -1),
-                self + Point(1, 1),
+                Point(self.x, self.y, self.z - 1),
+                Point(self.x, self.y, self.z + 1),
             ])
+        if diagonal:
+            offset_coords = [(-1, 1)] * 3 if is_3d else [(-1, 1)] * 2
+            for coordinate_pair in product(*offset_coords):
+                print(coordinate_pair)
+                offset = Point(*coordinate_pair)
+                neighbors.append(self + offset)
         return neighbors
 
     @staticmethod
     def from_csv(s):
-        start, end = s.split(',')
-        return Point(int(start), int(end))
+        coords = [int(c) for c in  s.split(',')]
+        return Point(*coords)
 
     def tuple(self):
-        return (self.x, self.y)
+        if self.z is not None:
+            return (self.x, self.y, self.z)
+        else:
+            return (self.x, self.y)
 
-    def manhattan_distance(self, other):
-        return abs(self.x - other.x) + abs(self.y - other.y)
+    def manhattan_distance(self, o):
+        if self.z is None:
+            return abs(self.x - o.x) + abs(self.y - o.y)
+        else:
+            return abs(self.x - o.x) + abs(self.y - o.y) + abs(self.z - o.z)
 
     def __repr__(self):
-        return f'<Point({self.x}, {self.y})>'
+        return f'<Point({self.tuple()})>'
 
     def __hash__(self):
-        return hash((self.x, self.y))
+        return hash(self.tuple())
 
     def __eq__(self, other):
         return self.tuple() == tuple(other)
@@ -49,10 +62,18 @@ class Point:
         return self.tuple() > tuple(other)
 
     def __str__(self):
-        return f'({self.x},{self.y})'
+        return f'{self.tuple()}'
 
     def __add__(self, other):
-        return Point(self.x + other.x, self.y + other.y)
+        p = Point(self.x + other.x, self.y + other.y)
+        if self.z is not None:
+            if other.z is not None:
+                p.z = self.z + other.z
+            else:
+                raise ValueError("Cannot add a 2D point to a 3D point")
+        elif other.z is not None:
+            raise ValueError("Cannot add a 2D point to a 3D point")
+        return p
 
     def __iter__(self):
         return iter(self.tuple())
@@ -67,6 +88,11 @@ class Line:
         return f'{self.start} -> {self.end}'
 
     def points(self):
+        if self.start.z is not None or self.end.z is not None:
+            raise NotImplementedError(
+                "Line.points() is not implemented for 3D lines"
+            )
+
         delta_x = self.end.x - self.start.x
         delta_y = self.end.y - self.start.y
 
@@ -74,7 +100,9 @@ class Line:
         step_y = delta_y // abs(delta_y) if delta_y != 0 else 0
 
         if abs(delta_x) != abs(delta_y) and delta_x != 0 and delta_y != 0:
-            raise NotImplementedError(f"{self} is not a horizontal, vertical or diagonal line")
+            raise NotImplementedError(
+                f"{self} is not a horizontal, vertical or diagonal line"
+            )
 
         pos = self.start
 
