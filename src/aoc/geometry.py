@@ -1,12 +1,19 @@
 from collections import defaultdict
 from itertools import product
 
-
 class Point:
     def __init__(self, x, y, z=None):
         self.x = x
         self.y = y
         self.z = z
+
+    def clone(self):
+        return Point(self.x, self.y, self.z)
+
+    @staticmethod
+    def from_csv(s):
+        coords = [int(c) for c in  s.split(',')]
+        return Point(*coords)
 
     def neighbors(self, diagonal=False):
         is_3d = self.z is not None
@@ -29,11 +36,6 @@ class Point:
                 neighbors.append(self + offset)
         return neighbors
 
-    @staticmethod
-    def from_csv(s):
-        coords = [int(c) for c in  s.split(',')]
-        return Point(*coords)
-
     def tuple(self):
         if self.z is not None:
             return (self.x, self.y, self.z)
@@ -45,6 +47,48 @@ class Point:
             return abs(self.x - o.x) + abs(self.y - o.y)
         else:
             return abs(self.x - o.x) + abs(self.y - o.y) + abs(self.z - o.z)
+
+    def rotate_around(self, axis, reverse=False):
+        if self.z is None:
+            raise TypeError("Cannot rotate 2d points")
+
+        p = self.clone()
+
+        a = 1
+        b = -1
+
+        if reverse:
+            a = -a
+            b = -b
+
+        if axis == 'x':
+            p.y = a * self.z
+            p.z = b * self.y
+        elif axis == 'y':
+            p.z = a * self.x
+            p.x = b * self.z
+        elif axis == 'z':
+            p.x = a * self.y
+            p.y = b * self.x
+        else:
+            raise ValueError(f"Invalid axis: {axis}")
+
+        return p
+
+    def rotate_up(self, axis, reverse=False):
+        p = self.clone()
+
+        if axis == 'x':
+            p = p.rotate_around('z', reverse=True)
+        elif axis == 'z':
+            p = p.rotate_around('x')
+        elif axis != 'y':
+            raise ValueError(f"Invalid axis: {axis}")
+
+        if reverse:
+            p = p.rotate_around('z').rotate_around('z')
+
+        return p
 
     def __repr__(self):
         return f'<Point({self.tuple()})>'
