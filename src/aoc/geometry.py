@@ -1,6 +1,12 @@
 from collections import defaultdict
 from itertools import product
 
+
+def parse_range(s):
+    coords = [int(x) for x in s.split('..')]
+    return min(coords), max(coords)
+
+
 class Point:
     def __init__(self, x, y, z=None):
         self.x = x
@@ -270,3 +276,90 @@ class Grid:
             lines.append("".join(str(v) for v in values))
 
         return "\n".join(lines)
+
+
+class Cuboid:
+    def __init__(self, min_x, max_x, min_y, max_y, min_z, max_z):
+        self.min_x = min_x
+        self.max_x = max_x
+        self.min_y = min_y
+        self.max_y = max_y
+        self.min_z = min_z
+        self.max_z = max_z
+
+    def __str__(self):
+        return ','.join([
+            f'x={self.min_x}..{self.max_x}',
+            f'y={self.min_y}..{self.max_y}',
+            f'z={self.min_z}..{self.max_z}',
+        ]) + f" (size: {self.size()})"
+
+    def clone(self):
+        return Cuboid(
+            self.min_x, self.max_x,
+            self.min_y, self.max_y,
+            self.min_z, self.max_z)
+
+    def size(self):
+        width = self.max_x - self.min_x + 1
+        height = self.max_y - self.min_y + 1
+        depth = self.max_z - self.min_z + 1
+        return width * height * depth
+
+    def intersection(self, other):
+        min_x = max(self.min_x, other.min_x)
+        max_x = min(self.max_x, other.max_x)
+        min_y = max(self.min_y, other.min_y)
+        max_y = min(self.max_y, other.max_y)
+        min_z = max(self.min_z, other.min_z)
+        max_z = min(self.max_z, other.max_z)
+
+        if max_x < min_x or max_y < min_y or max_z < min_z:
+            return None
+
+        return Cuboid(min_x, max_x, min_y, max_y, min_z, max_z)
+
+    def difference(self, other):
+        intersection = self.intersection(other)
+        if intersection is None:
+            return [self.clone()]
+
+        difference = []
+
+        if self.min_x < intersection.min_x:
+            difference.append(
+                Cuboid(self.min_x, intersection.min_x - 1,
+                       self.min_y, self.max_y,
+                       self.min_z, self.max_z))
+
+        if intersection.max_x < self.max_x:
+            difference.append(
+                Cuboid(intersection.max_x + 1, self.max_x,
+                       self.min_y, self.max_y,
+                       self.min_z, self.max_z))
+
+        if self.min_y < intersection.min_y:
+            difference.append(
+                Cuboid(intersection.min_x, intersection.max_x,
+                       self.min_y, intersection.min_y - 1,
+                       self.min_z, self.max_z))
+
+        if intersection.max_y < self.max_y:
+            difference.append(
+                Cuboid(intersection.min_x, intersection.max_x,
+                       intersection.max_y + 1, self.max_y,
+                       self.min_z, self.max_z))
+
+        if self.min_z < intersection.min_z :
+            difference.append(
+                Cuboid(intersection.min_x, intersection.max_x,
+                       intersection.min_y, intersection.max_y,
+                       self.min_z, intersection.min_z - 1))
+
+        if intersection.max_z < self.max_z:
+            difference.append(
+                Cuboid(intersection.min_x, intersection.max_x,
+                       intersection.min_y, intersection.max_y,
+                       intersection.max_z + 1, self.max_z))
+
+        return difference
