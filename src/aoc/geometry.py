@@ -220,9 +220,6 @@ class Grid:
     def items(self):
         return self.grid.items()
 
-    def values(self):
-        return self.grid.values()
-
     def top_left(self):
         return self.corners()[0]
 
