@@ -129,6 +129,9 @@ class Point:
         z = -other.z if other.z is not None else None
         return self + Point(-other.x, -other.y, z)
 
+    def __neg__(self):
+        return Point(0, 0, 0) - self
+
     def __iter__(self):
         return iter(self.tuple())
 
